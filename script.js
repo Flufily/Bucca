@@ -285,7 +285,7 @@ logoutBtn.addEventListener('click', async () => {
 });
 
 // ==========================================
-// 7. 🛸 SCI-FI HUD CURSOR LOGIC
+// 7. 🛸 SCI-FI HUD CURSOR LOGIC (MIT TRAIL)
 // ==========================================
 function initSciFiCursor() {
     const dot = document.createElement('div');
@@ -302,6 +302,27 @@ function initSciFiCursor() {
         dot.style.top = e.clientY + 'px';
         glow.style.left = e.clientX + 'px';
         glow.style.top = e.clientY + 'px';
+
+        // 🎇 Quanten-Schweif (Particle Trail) generieren
+        const now = Date.now();
+        // Erzeugt alle 25 Millisekunden einen Partikel für flüssige Optik ohne Lags
+        if (!window.lastTrailSpawn || now - window.lastTrailSpawn > 25) {
+            const particle = document.createElement('div');
+            const isLocked = document.body.classList.contains('sc-target-lock');
+            
+            particle.className = isLocked ? 'sc-trail-particle orange' : 'sc-trail-particle';
+            particle.style.left = e.clientX + 'px';
+            particle.style.top = e.clientY + 'px';
+            
+            document.body.appendChild(particle);
+            
+            // Löscht das Element nach Ablauf der CSS-Animation aus dem System
+            setTimeout(() => {
+                particle.remove();
+            }, 400);
+            
+            window.lastTrailSpawn = now;
+        }
     });
 
     document.addEventListener('mouseover', (e) => {
@@ -335,7 +356,7 @@ function initSciFiCursor() {
 
 // App initialisieren & Cursor starten
 async function initApp() {
-    initSciFiCursor(); // Maus-Effekt direkt zünden!
+    initSciFiCursor(); 
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) updateUI(session.user);
     supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });

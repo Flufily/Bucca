@@ -73,3 +73,36 @@ body.sc-target-lock .sc-cursor-glow {
     box-shadow: 0 0 15px rgba(255, 119, 0, 0.2);
     border-style: dashed;
 }
+
+/* 🎇 QUANTEN-SCHWEIF PARTIKEL (TRAIL) */
+.sc-trail-particle {
+    width: 4px;
+    height: 4px;
+    background-color: rgba(0, 240, 255, 0.7);
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 6px #00f0ff;
+    /* Führt die Verblass- und Schrumpf-Animation aus */
+    animation: sc-fade-shrink 0.4s ease-out forwards;
+}
+
+/* Partikel-Farbe im Target-Lock */
+.sc-trail-particle.orange {
+    background-color: rgba(255, 119, 0, 0.7);
+    box-shadow: 0 0 6px #ff7700;
+}
+
+/* Dynamische Animation: Partikel schrumpft auf 20% und wird unsichtbar */
+@keyframes sc-fade-shrink {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 0;
+    }
+}
