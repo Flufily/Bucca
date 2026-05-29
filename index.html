@@ -22,22 +22,22 @@
         }
     </script>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body class="bg-scDark text-gray-300 font-orbitron min-h-screen flex flex-col selection:bg-scCyan selection:text-black">
 
-    <!-- Navigation -->
     <nav class="border-b border-scCyan/30 bg-scPanel/50 backdrop-blur-md p-4 flex justify-between items-center shadow-[0_0_15px_rgba(0,240,255,0.1)]">
-        <h1 class="text-2xl font-bold text-scCyan tracking-widest uppercase sc-glow-cyan">Buccaneers <span class="text-scOrange sc-glow-orange">Zentrale</span></h1>
+        <h1 class="text-2xl font-bold text-scCyan tracking-widest uppercase">Fleet <span class="text-scOrange">Command</span></h1>
         <div class="flex items-center gap-4">
             <span id="roleBadge" class="hidden text-xs px-3 py-1 rounded border font-bold uppercase tracking-widest"></span>
             <button id="logoutBtn" class="hidden text-sm border border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded transition-all">Abmelden</button>
         </div>
     </nav>
 
-    <!-- Main Content Wrapper (flex-grow sorgt dafür, dass der Footer immer unten klebt) -->
     <main class="container mx-auto p-6 mt-8 max-w-5xl flex-grow">
         
-        <!-- Auth Section -->
         <section id="authSection" class="bg-scPanel border border-scCyan/20 p-8 rounded-lg shadow-[0_0_30px_rgba(0,240,255,0.05)] max-w-md mx-auto">
             <h2 class="text-xl font-bold text-white mb-6 uppercase tracking-wider text-center">Identifikation erforderlich</h2>
             <div class="space-y-4">
@@ -54,27 +54,22 @@
             </div>
         </section>
 
-        <!-- Dashboard Section -->
         <section id="dashboardSection" class="hidden space-y-8">
             
-            <!-- 1. NEWS / SPECTRUM FEED -->
             <div class="bg-scPanel border border-gray-800 p-6 rounded-lg shadow-lg">
                 <h2 class="text-xl text-scCyan font-bold uppercase tracking-widest mb-4 border-b border-gray-800 pb-2">✦ Spectrum News Feed & Events ✦</h2>
                 <div id="newsContainer" class="space-y-4 max-h-[200px] overflow-y-auto pr-2"></div>
             </div>
 
-            <!-- ADMIN COMMAND CONSOLE -->
-            <div id="adminControls" class="hidden bg-scOrange/5 border border-scOrange p-6 rounded-lg space-y-6 sc-pulse-panel">
+            <div id="adminControls" class="hidden bg-scOrange/5 border border-scOrange p-6 rounded-lg space-y-6">
                 <h3 class="text-scOrange font-bold uppercase text-base tracking-widest border-b border-scOrange/30 pb-2">⚙ Admin Command Console</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Formular: Schiff -->
                     <div class="space-y-3">
                         <h4 class="text-white text-xs uppercase font-bold text-scOrange/80">Schiff registrieren</h4>
                         <input type="text" id="shipNameInput" placeholder="Schiffsname" class="w-full bg-scDark border border-gray-700 text-xs p-2 rounded text-white focus:border-scOrange outline-none">
                         <input type="text" id="shipMfgInput" placeholder="Hersteller" class="w-full bg-scDark border border-gray-700 text-xs p-2 rounded text-white focus:border-scOrange outline-none">
                         <input type="text" id="shipClassInput" placeholder="Klasse" class="w-full bg-scDark border border-gray-700 text-xs p-2 rounded text-white focus:border-scOrange outline-none">
-                        <!-- NEU: Auswahl für Erwerbstyp -->
                         <select id="shipTypeInput" class="w-full bg-scDark border border-gray-700 text-xs p-2 rounded text-white focus:border-scOrange outline-none cursor-pointer">
                             <option value="true">Pledge (Echtgeld Store)</option>
                             <option value="false">Ingame (mit aUEC gekauft)</option>
@@ -82,7 +77,6 @@
                         <button id="addShipBtn" class="w-full bg-scOrange text-black text-[10px] font-bold py-2 rounded hover:bg-orange-400 uppercase tracking-wider transition-all">Eintragen</button>
                     </div>
 
-                    <!-- Formular: News -->
                     <div class="space-y-3">
                         <h4 class="text-white text-xs uppercase font-bold text-scOrange/80">News senden</h4>
                         <input type="text" id="newsTitleInput" placeholder="Titel" class="w-full bg-scDark border border-gray-700 text-xs p-2 rounded text-white focus:border-scOrange outline-none">
@@ -90,7 +84,6 @@
                         <button id="addNewsBtn" class="w-full bg-scOrange text-black text-[10px] font-bold py-2 rounded hover:bg-orange-400 uppercase tracking-wider transition-all">Senden</button>
                     </div>
 
-                    <!-- Formular: Pilot -->
                     <div class="space-y-3">
                         <h4 class="text-white text-xs uppercase font-bold text-scOrange/80">Pilot hinzufügen</h4>
                         <input type="text" id="pilotNameInput" placeholder="Pilotenname" class="w-full bg-scDark border border-gray-700 text-xs p-2 rounded text-white focus:border-scOrange outline-none">
@@ -101,27 +94,21 @@
                 </div>
             </div>
 
-            <!-- STACKED LAYOUT -->
             <div class="space-y-8">
                 
-                <!-- 2. PILOTEN-BEREICH -->
                 <div class="bg-scPanel border border-gray-800 p-6 rounded-lg shadow-lg">
                     <h2 class="text-xl text-white uppercase tracking-wider mb-4 border-b border-gray-800 pb-2">👨‍🚀 Aktive Piloten-Besatzung</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="pilotsContainer"></div>
                 </div>
 
-                <!-- 3. FLOTTEN-BEREICH (Jetzt intern getrennt in Pledge / Ingame) -->
                 <div class="bg-scPanel border border-gray-800 p-6 rounded-lg shadow-lg">
                     <h2 class="text-xl text-white uppercase tracking-wider mb-6 border-b border-gray-800 pb-2">🚢 Aktiver Flotten-Roster</h2>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Linke Unterspalte: Pledge-Schiffe -->
                         <div>
                             <h3 class="text-xs font-bold text-scCyan uppercase tracking-widest mb-4 border-b border-scCyan/10 pb-2">💳 Hangar: Pledge-Flotte</h3>
                             <div class="grid grid-cols-1 gap-3" id="pledgeFleetContainer"></div>
                         </div>
-
-                        <!-- Rechte Unterspalte: Ingame-Schiffe -->
                         <div>
                             <h3 class="text-xs font-bold text-scOrange uppercase tracking-widest mb-4 border-b border-scOrange/10 pb-2">🎮 Werft: Ingame-Flotte (aUEC)</h3>
                             <div class="grid grid-cols-1 gap-3" id="ingameFleetContainer"></div>
@@ -133,9 +120,8 @@
         </section>
     </main>
 
-    <!-- DISCREET Disclaimers / Copyright Footer -->
     <footer class="border-t border-gray-900 bg-[#070709] text-gray-600 text-[11px] py-8 px-4 text-center mt-12 space-y-2">
-        <p class="uppercase tracking-widest font-bold text-gray-500">&copy; 2026 Buccaneers // All Systems Operational</p>
+        <p class="uppercase tracking-widest font-bold text-gray-500">&copy; 2026 Fleet Command HQ // All Systems Operational</p>
         <p class="max-w-3xl mx-auto leading-relaxed text-gray-600">
             This website is an unofficial Star Citizen fan platform and is not affiliated with Cloud Imperium Games, Roberts Space Industries, or any of their partners. All game contents, descriptions, ship designs, and assets are properties of their respective owners.
         </p>
