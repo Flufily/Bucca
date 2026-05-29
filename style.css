@@ -1,122 +1,168 @@
 /* ==========================================
-   🌌 STAR CITIZEN DEEP SPACE BACKGROUND
+   🌌 PREMIUM TACTICAL COCKPIT BACKGROUND
    ========================================== */
 body {
-    background-color: #030305; /* Extrem tiefes Weltraum-Schwarz */
+    background-color: #030407; /* Tiefes Cockpit-Dunkelblau */
     
-    /* Generiert ein nahtloses, gestochen scharfes Sternenfeld mit astronomischen Farbtupfern */
+    /* Layer 1 & 2: Atmosphärische Nebel-Glows im Hintergrund
+       Layer 3 bis 7: Mikroskopisch kleine Fixsterne
+       Layer 8 & 9: Das harte, definierte High-Tech-Koordinatengitter */
     background-image: 
-        radial-gradient(1px 1px at 25px 40px, #ffffff 100%, transparent),
-        radial-gradient(1px 1px at 75px 140px, #ffffff 80%, transparent),
-        radial-gradient(1.5px 1.5px at 120px 280px, #00f0ff 90%, transparent), /* Cyanfarbener Stern */
-        radial-gradient(1px 1px at 190px 75px, #ffffff 100%, transparent),
-        radial-gradient(2px 2px at 260px 210px, #ffffff 70%, transparent),
-        radial-gradient(1px 1px at 310px 110px, #ff7700 80%, transparent), /* Orangefarbener Stern */
-        radial-gradient(1px 1px at 50px 230px, #ffffff 90%, transparent),
-        radial-gradient(1.5px 1.5px at 220px 330px, #ffffff 100%, transparent),
+        radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 15% 80%, rgba(255, 119, 0, 0.03) 0%, transparent 50%),
         
-        /* Subtiler Galaxie- & Nebel-Glow im Hintergrund */
-        radial-gradient(circle at 85% 20%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 15% 75%, rgba(255, 119, 0, 0.02) 0%, transparent 50%);
+        radial-gradient(0.8px 0.8px at 40px 80px, rgba(255, 255, 255, 0.5) 100%, transparent),
+        radial-gradient(1px 1px at 120px 220px, rgba(0, 240, 255, 0.3) 100%, transparent),
+        radial-gradient(0.6px 0.6px at 190px 45px, rgba(255, 255, 255, 0.2) 100%, transparent),
+        radial-gradient(1.2px 1.2px at 290px 160px, rgba(255, 119, 0, 0.4) 100%, transparent),
+        radial-gradient(0.7px 0.7px at 340px 280px, rgba(255, 255, 255, 0.4) 100%, transparent),
         
-    /* Kachelt die Sterne perfekt über den gesamten Bildschirm */
-    background-size: 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 100% 100%, 100% 100%;
+        /* Das definierte, härtere Tech-Raster */
+        linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
+        
+    background-size: 100% 100%, 100% 100%, 400px 400px, 400px 400px, 400px 400px, 400px 400px, 400px 400px, 40px 40px, 40px 40px;
     background-attachment: fixed;
+    position: relative;
 }
 
-/* Custom Scrollbar für den Spectrum Feed */
-::-webkit-scrollbar {
-    width: 4px;
+/* 📺 LAYER A: Kinoreife Vignette (Dunkelt die Ecken des Monitors ab) */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 40%, rgba(2, 3, 5, 0.8) 100%);
+    pointer-events: none;
+    z-index: 1;
 }
-::-webkit-scrollbar-track {
-    background: #0a0a0c;
+
+/* 📺 LAYER B: CRT-SCANLINES & RÖHREN-PIXEL-MATRIX (Liegt über dem Content) */
+body::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    
+    /* Erzeugt feinste horizontale Linien und eine ganz dezente RGB-Farbverschiebung */
+    background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+    
+    /* Erzeugt die Pixeldichte des CRT-Schirms (3px Zeilenabstand) */
+    background-size: 100% 3px, 6px 100%;
+    
+    /* pointer-events: none sorgt dafür, dass man durch die Linien durchklicken kann! */
+    pointer-events: none;
+    z-index: 9990; 
+    opacity: 0.45;
 }
-::-webkit-scrollbar-thumb {
-    background: #00f0ff;
-    border-radius: 2px;
+
+/* Schützt den Hauptinhalt, damit er lesbar unter dem CRT-Schirm liegt */
+main, nav, footer {
+    position: relative;
+    z-index: 2;
 }
 
 /* ==========================================
-   🛸 SCI-FI HUD CURSOR STYLES
+   ⚙️ CONTENT COMPONENT UPGRADES (Glassmorphism)
    ========================================== */
-/* Versteckt den normalen Windows-Mauszeiger überall */
+.bg-scPanel {
+    background-color: rgba(10, 12, 18, 0.7) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+/* Dezentere, schärfere Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 3px;
+}
+::-webkit-scrollbar-track {
+    background: #040508;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 240, 255, 0.3);
+    border-radius: 9px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 240, 255, 0.6);
+}
+
+/* ==========================================
+   🛸 SCI-FI HUD CURSOR STYLES (Z-Index über CRT!)
+   ========================================== */
 html, body, button, input, select, textarea, a, option {
     cursor: none !important;
 }
 
-/* Der innere Laser-Punkt */
 .sc-cursor-dot {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
     background-color: #00f0ff;
     position: fixed;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 10000;
+    z-index: 10000; /* Ganz oben, über dem CRT-Effekt */
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+    box-shadow: 0 0 8px #00f0ff;
     transition: background-color 0.2s, width 0.2s, height 0.2s;
 }
 
-/* Der äußere, nachziehende Ortungskreis */
 .sc-cursor-glow {
-    width: 34px;
-    height: 34px;
-    border: 1px solid rgba(0, 240, 255, 0.4);
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(0, 240, 255, 0.3);
     position: fixed;
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: transform 0.08s ease-out, border-color 0.2s, width 0.2s, height 0.2s, background-color 0.2s;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.1);
+    transition: transform 0.1s ease-out, border-color 0.2s, width 0.2s, height 0.2s, background-color 0.2s;
 }
 
-/* 🎯 TARGET LOCK MODUS (Wenn du über Buttons/Inputs hoverst) */
+/* 🎯 TARGET LOCK MODUS */
 body.sc-target-lock .sc-cursor-dot {
     background-color: #ff7700;
-    width: 4px;
-    height: 4px;
-    box-shadow: 0 0 10px #ff7700;
+    width: 3px;
+    height: 3px;
+    box-shadow: 0 0 8px #ff7700;
 }
 
 body.sc-target-lock .sc-cursor-glow {
-    border-color: #ff7700;
-    width: 24px;
-    height: 24px;
-    background-color: rgba(255, 119, 0, 0.05);
-    box-shadow: 0 0 15px rgba(255, 119, 0, 0.2);
+    border-color: rgba(255, 119, 0, 0.7);
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 119, 0, 0.03);
     border-style: dashed;
 }
 
-/* 🎇 QUANTEN-SCHWEIF PARTIKEL (TRAIL) */
+/* 🎇 ELEGANTER MINIMAL-TRAIL */
 .sc-trail-particle {
-    width: 4px;
-    height: 4px;
-    background-color: rgba(0, 240, 255, 0.7);
+    width: 3px;
+    height: 3px;
+    background-color: rgba(0, 240, 255, 0.4);
     position: fixed;
     border-radius: 50%;
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 6px #00f0ff;
-    animation: sc-fade-shrink 0.4s ease-out forwards;
+    animation: sc-fade-shrink 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Partikel-Farbe im Target-Lock */
 .sc-trail-particle.orange {
-    background-color: rgba(255, 119, 0, 0.7);
-    box-shadow: 0 0 6px #ff7700;
+    background-color: rgba(255, 119, 0, 0.4);
 }
 
-/* Dynamische Animation: Partikel schrumpft und verblasst */
 @keyframes sc-fade-shrink {
     0% {
         transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
+        opacity: 0.8;
     }
     100% {
-        transform: translate(-50%, -50%) scale(0.2);
+        transform: translate(-50%, -50%) scale(0.1);
         opacity: 0;
     }
 }
