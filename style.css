@@ -46,3 +46,121 @@ body::before {
 .sc-pulse-panel {
     animation: pulse-border 3s infinite ease-in-out;
 }
+
+/* ==========================================
+   🛸 SCI-FI HUD CURSOR STYLES
+   ========================================== */
+
+/* Standard-Mauszeiger auf der gesamten Seite und auf interaktiven Elementen deaktivieren */
+html, body, button, input, select, textarea, a, option {
+    cursor: none !important;
+}
+
+/* Der innere Laser-Punkt */
+.sc-cursor-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #00f0ff;
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+    transition: background-color 0.2s, width 0.2s, height 0.2s;
+}
+
+/* Der äußere, leicht verzögerte Ortungskreis */
+.sc-cursor-glow {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    /* Das 'ease-out' sorgt für den coolen, leicht hinterherziehenden Effekt */
+    transition: transform 0.08s ease-out, border-color 0.2s, width 0.2s, height 0.2s, background-color 0.2s;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.1);
+}
+
+/* 🎯 TARGET LOCK: Wenn der User über einen Button oder Input hovert */
+body.sc-target-lock .sc-cursor-dot {
+    background-color: #ff7700;
+    width: 4px;
+    height: 4px;
+    box-shadow: 0 0 10px #ff7700;
+}
+
+body.sc-target-lock .sc-cursor-glow {
+    border-color: #ff7700;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(255, 119, 0, 0.05);
+    box-shadow: 0 0 15px rgba(255, 119, 0, 0.2);
+    border-style: dashed; /* Macht den Kreis im Lock-Modus gestrichelt */
+}
+
+// ==========================================
+// 🛸 HUD CURSOR & MOUSE TRAIL LOGIC
+// ==========================================
+function initSciFiCursor() {
+    // Erstelle die Cursor-Elemente dynamisch im DOM
+    const dot = document.createElement('div');
+    const glow = document.createElement('div');
+    
+    dot.className = 'sc-cursor-dot';
+    glow.className = 'sc-cursor-glow';
+    
+    document.body.appendChild(dot);
+    document.body.appendChild(glow);
+
+    // Mausbewegung tracken
+    window.addEventListener('mousemove', (e) => {
+        // Positionierung über clientX/Y fängt auch Scrollen perfekt ab
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+        
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    });
+
+    // Event-Delegation: Prüfen, ob wir über etwas Interaktives hovern (Target Lock)
+    document.addEventListener('mouseover', (e) => {
+        const target = e.target;
+        // Reagiert auf Buttons, Inputs, Selects, Links oder das "✕ Entfernen" Kreuz
+        if (
+            target.tagName === 'BUTTON' || 
+            target.tagName === 'INPUT' || 
+            target.tagName === 'SELECT' || 
+            target.tagName === 'A' || 
+            target.tagName === 'TEXTAREA' ||
+            target.closest('button')
+        ) {
+            document.body.classList.add('sc-target-lock');
+        }
+    });
+
+    // Wenn die Maus das Element verlässt, Target Lock aufheben
+    document.addEventListener('mouseout', (e) => {
+        const target = e.target;
+        if (
+            target.tagName === 'BUTTON' || 
+            target.tagName === 'INPUT' || 
+            target.tagName === 'SELECT' || 
+            target.tagName === 'A' || 
+            target.tagName === 'TEXTAREA' ||
+            !e.relatedTarget
+        ) {
+            document.body.classList.remove('sc-target-lock');
+        }
+    });
+}
+
+// Startet den Cursor, sobald das Dokument geladen ist
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSciFiCursor);
+} else {
+    initSciFiCursor();
+}
