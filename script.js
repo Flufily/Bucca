@@ -6,8 +6,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // HIER RECHTS steht das vom CDN gelieferte 'supabase'
 // LINKS benennen wir unsere eigene Variable um in 'supabaseClient'
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
-
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let userIsAdmin = false;
 
 // ==========================================
@@ -20,7 +19,6 @@ const newsContainer = document.getElementById('newsContainer');
 const pilotsContainer = document.getElementById('pilotsContainer');
 const roleBadge = document.getElementById('roleBadge');
 
-// NEU: Getrennte Flotten-Container statt dem einen alten Container
 const pledgeFleetContainer = document.getElementById('pledgeFleetContainer');
 const ingameFleetContainer = document.getElementById('ingameFleetContainer');
 
@@ -32,7 +30,7 @@ const authMessage = document.getElementById('authMessage');
 const shipNameInput = document.getElementById('shipNameInput');
 const shipMfgInput = document.getElementById('shipMfgInput');
 const shipClassInput = document.getElementById('shipClassInput');
-const shipTypeInput = document.getElementById('shipTypeInput'); // NEU
+const shipTypeInput = document.getElementById('shipTypeInput'); 
 const newsTitleInput = document.getElementById('newsTitleInput');
 const newsContentInput = document.getElementById('newsContentInput');
 const pilotNameInput = document.getElementById('pilotNameInput');
@@ -47,7 +45,6 @@ const addPilotBtn = document.getElementById('addPilotBtn');
 // ==========================================
 // 3. UI-STEUERUNG & ROLES
 // ==========================================
-
 function showMessage(text, isError = false) {
     authMessage.textContent = text;
     authMessage.classList.remove('hidden', 'text-scCyan', 'text-red-500');
@@ -65,11 +62,11 @@ async function updateUI(user) {
         roleBadge.classList.remove('hidden', 'border-scOrange', 'text-scOrange', 'border-scCyan', 'text-scCyan');
         if (userIsAdmin) {
             roleBadge.textContent = "Freigabe: ADMIN";
-            roleBadge.classList.add('border-scOrange', 'text-scOrange', 'sc-glow-orange');
+            roleBadge.classList.add('border-scOrange', 'text-scOrange');
             adminControls.classList.remove('hidden');
         } else {
             roleBadge.textContent = "Freigabe: MEMBER";
-            roleBadge.classList.add('border-scCyan', 'text-scCyan', 'sc-glow-cyan');
+            roleBadge.classList.add('border-scCyan', 'text-scCyan');
             adminControls.classList.add('hidden');
         }
 
@@ -104,20 +101,15 @@ async function checkAdminStatus(userId) {
 // ==========================================
 // 4. DATEN LADEN UND RENDERN
 // ==========================================
-
-// SCHIFFE LADEN (Jetzt mit Weiche für Pledge / Ingame)
 async function loadFleetData() {
     const { data: ships, error } = await supabaseClient.from('ships').select('*').order('name', { ascending: true });
     if (error) return console.error(error.message);
 
-    // Beide Hälften leeren vor dem Neu-Rendern
     pledgeFleetContainer.innerHTML = '';
     ingameFleetContainer.innerHTML = '';
 
     ships.forEach(ship => {
         const shipCard = document.createElement('div');
-        
-        // Design-Akzentfarbe anpassen, je nachdem ob Echtgeld-Pledge (Cyan) oder Ingame (Orange)
         const accentClass = ship.is_pledge ? "hover:border-scCyan" : "hover:border-scOrange";
         
         shipCard.className = `bg-scDark/60 border border-gray-800 p-3 rounded flex justify-between items-center group ${accentClass} transition-all duration-300`;
@@ -137,7 +129,6 @@ async function loadFleetData() {
             shipCard.appendChild(deleteBtn);
         }
 
-        // WEICHE: In welchen Hangar gehört das Schiff laut Datenbank?
         if (ship.is_pledge) {
             pledgeFleetContainer.appendChild(shipCard);
         } else {
@@ -145,7 +136,6 @@ async function loadFleetData() {
         }
     });
 
-    // Leer-Meldungen falls ein Bereich unbesetzt ist
     if(pledgeFleetContainer.children.length === 0) {
         pledgeFleetContainer.innerHTML = `<p class="text-xs text-gray-600 italic">Keine Schiffe registriert.</p>`;
     }
@@ -154,7 +144,6 @@ async function loadFleetData() {
     }
 }
 
-// NEWS LADEN
 async function loadNewsData() {
     const { data: newsItems, error } = await supabaseClient.from('news').select('*').order('created_at', { ascending: false });
     if (error) return console.error(error.message);
@@ -184,7 +173,6 @@ async function loadNewsData() {
     });
 }
 
-// PILOTEN LADEN
 async function loadPilotsData() {
     const { data: pilots, error } = await supabaseClient.from('pilots').select('*').order('name', { ascending: true });
     if (error) return console.error(error.message);
@@ -221,13 +209,10 @@ async function loadPilotsData() {
 // ==========================================
 // 5. ADMIN AKTIONEN
 // ==========================================
-
-// Schiff hinzufügen
 addShipBtn.addEventListener('click', async () => {
     const name = shipNameInput.value.trim();
     const manufacturer = shipMfgInput.value.trim();
     const ship_class = shipClassInput.value.trim();
-    // Der String aus dem Dropdown ('true' oder 'false') wird hier in einen echten Boolean gewandelt
     const is_pledge = shipTypeInput.value === 'true';
 
     if(!name || !manufacturer || !ship_class) return alert("Felder ausfüllen!");
@@ -250,7 +235,6 @@ async function deleteShip(id) {
     }
 }
 
-// News hinzufügen
 addNewsBtn.addEventListener('click', async () => {
     const title = newsTitleInput.value.trim();
     const content = newsContentInput.value.trim();
@@ -267,7 +251,6 @@ async function deleteNews(id) {
     }
 }
 
-// Pilot hinzufügen
 addPilotBtn.addEventListener('click', async () => {
     const name = pilotNameInput.value.trim();
     const specialization = pilotSpecInput.value.trim();
@@ -301,17 +284,60 @@ logoutBtn.addEventListener('click', async () => {
     if (!error) { updateUI(null); emailInput.value = ''; passwordInput.value = ''; }
 });
 
+// ==========================================
+// 7. 🛸 SCI-FI HUD CURSOR LOGIC
+// ==========================================
+function initSciFiCursor() {
+    const dot = document.createElement('div');
+    const glow = document.createElement('div');
+    
+    dot.className = 'sc-cursor-dot';
+    glow.className = 'sc-cursor-glow';
+    
+    document.body.appendChild(dot);
+    document.body.appendChild(glow);
+
+    window.addEventListener('mousemove', (e) => {
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    });
+
+    document.addEventListener('mouseover', (e) => {
+        const target = e.target;
+        if (
+            target.tagName === 'BUTTON' || 
+            target.tagName === 'INPUT' || 
+            target.tagName === 'SELECT' || 
+            target.tagName === 'A' || 
+            target.tagName === 'TEXTAREA' ||
+            target.closest('button')
+        ) {
+            document.body.classList.add('sc-target-lock');
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        const target = e.target;
+        if (
+            target.tagName === 'BUTTON' || 
+            target.tagName === 'INPUT' || 
+            target.tagName === 'SELECT' || 
+            target.tagName === 'A' || 
+            target.tagName === 'TEXTAREA' ||
+            !e.relatedTarget
+        ) {
+            document.body.classList.remove('sc-target-lock');
+        }
+    });
+}
+
+// App initialisieren & Cursor starten
 async function initApp() {
+    initSciFiCursor(); // Maus-Effekt direkt zünden!
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) updateUI(session.user);
     supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });
 }
-
-window.onerror = function(message, source, lineno, colno, error) {
-    alert("❌ SCRIPT CRASHED!\n\nFehler: " + message + "\nZeile: " + lineno);
-    return false;
-};
-
-alert("🚀 Skript gestartet! Teste jetzt den Login-Button.");
-
 initApp();
