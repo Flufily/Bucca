@@ -335,15 +335,15 @@ function initSciFiCursor() {
 }
 
 // ==========================================
-// 8. 🎵 SPACE AMBIENT AUDIO LOGIC (AUTOPLAY DEFAULT)
+// 8. 🎵 DEIN SUPABASE STORAGE AUDIO MODULE
 // ==========================================
 function initSpaceMusic() {
-    // Entspannter Endlos-Space-Drone-Sound (Kannst du durch ein eigenes File ersetzen)
-    const audioTrack = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3'); 
+    // Greift direkt auf deine hochgeladene Datei im "music" Bucket zu
+    const audioTrack = new Audio('https://ebmkhqcgiidyvlgzibit.supabase.co/storage/v1/object/public/music/song.mp3'); 
     audioTrack.loop = true;
-    audioTrack.volume = 0.04; // Schön dezent im Hintergrund (4% Lautstärke)
+    audioTrack.volume = 0.05; // Extrem angenehme 5% Hintergrundlautstärke
 
-    // Erstellt den HUD-Mute-Button dynamisch unten rechts
+    // Erstellt das HUD-Control-Element unten rechts
     const muteBtn = document.createElement('button');
     muteBtn.className = 'sc-audio-toggle';
     muteBtn.innerText = '📡 COMMS: STBY';
@@ -351,23 +351,51 @@ function initSpaceMusic() {
 
     let isPlaying = false;
 
-    // Zentrale Funktion, die versucht den Sound zu starten
+    // Start-Funktion
     const tryToPlayAudio = () => {
         if (!isPlaying) {
             audioTrack.play().then(() => {
                 isPlaying = true;
                 muteBtn.innerText = '📡 COMMS: LIVE';
-                // Wenn es geklappt hat, entfernen wir den Klick-Sicherheitsnetz-Listener wieder
                 window.removeEventListener('click', tryToPlayAudio);
             }).catch(err => {
-                // Wird getriggert, wenn der Browser den Direktstart blockiert
-                console.log("Browser blockiert direkten Autoplay. Warte auf erste User-Interaktion...");
+                console.log("Browser blockiert Autoplay. Warte auf ersten Klick...");
             });
         }
     };
 
-    // 🚀 SCHRITT 1: Direkt beim Laden der Seite "Standardmäßig AN" versuchen!
+    // Autoplay-Versuch direkt beim Laden der Triebwerke
     tryToPlayAudio();
+
+    // Sicherheitsnetz: Startet sofort, sobald der User das erste Mal klickt
+    window.addEventListener('click', tryToPlayAudio);
+
+    // Klick-Logik für den manuellen Mute-Button
+    muteBtn.innerText = '📡 COMMS: LIVE';
+    muteBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Verhindert die Auslösung des globalen Fenster-Klicks
+        if (isPlaying) {
+            audioTrack.pause();
+            isPlaying = false;
+            muteBtn.innerText = '📡 COMMS: MUTE';
+        } else {
+            audioTrack.play().then(() => {
+                isPlaying = true;
+                muteBtn.innerText = '📡 COMMS: LIVE';
+            });
+        }
+    });
+}
+
+// App initialisieren & Systeme starten
+async function initApp() {
+    initSciFiCursor(); 
+    initSpaceMusic(); // Zündet das Musik-Modul
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) updateUI(session.user);
+    supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });
+}
+initApp();
 
     // 🔄 SCHRITT 2: Sicherheitsnetz – Falls Schritt 1 blockiert wird, startet es beim allerersten Klick
     window.addEventListener('click', tryToPlayAudio);
