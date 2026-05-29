@@ -1,11 +1,26 @@
 /* ==========================================
-   🌌 BASE, BACKGROUND & SCROLLBAR
+   🌌 STAR CITIZEN DEEP SPACE BACKGROUND
    ========================================== */
 body {
+    background-color: #030305; /* Extrem tiefes Weltraum-Schwarz */
+    
+    /* Generiert ein nahtloses, gestochen scharfes Sternenfeld mit astronomischen Farbtupfern */
     background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
-    background-size: 30px 30px;
+        radial-gradient(1px 1px at 25px 40px, #ffffff 100%, transparent),
+        radial-gradient(1px 1px at 75px 140px, #ffffff 80%, transparent),
+        radial-gradient(1.5px 1.5px at 120px 280px, #00f0ff 90%, transparent), /* Cyanfarbener Stern */
+        radial-gradient(1px 1px at 190px 75px, #ffffff 100%, transparent),
+        radial-gradient(2px 2px at 260px 210px, #ffffff 70%, transparent),
+        radial-gradient(1px 1px at 310px 110px, #ff7700 80%, transparent), /* Orangefarbener Stern */
+        radial-gradient(1px 1px at 50px 230px, #ffffff 90%, transparent),
+        radial-gradient(1.5px 1.5px at 220px 330px, #ffffff 100%, transparent),
+        
+        /* Subtiler Galaxie- & Nebel-Glow im Hintergrund */
+        radial-gradient(circle at 85% 20%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 15% 75%, rgba(255, 119, 0, 0.02) 0%, transparent 50%);
+        
+    /* Kachelt die Sterne perfekt über den gesamten Bildschirm */
+    background-size: 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 100% 100%, 100% 100%;
     background-attachment: fixed;
 }
 
@@ -85,7 +100,6 @@ body.sc-target-lock .sc-cursor-glow {
     z-index: 9998;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 6px #00f0ff;
-    /* Führt die Verblass- und Schrumpf-Animation aus */
     animation: sc-fade-shrink 0.4s ease-out forwards;
 }
 
@@ -95,7 +109,7 @@ body.sc-target-lock .sc-cursor-glow {
     box-shadow: 0 0 6px #ff7700;
 }
 
-/* Dynamische Animation: Partikel schrumpft auf 20% und wird unsichtbar */
+/* Dynamische Animation: Partikel schrumpft und verblasst */
 @keyframes sc-fade-shrink {
     0% {
         transform: translate(-50%, -50%) scale(1);
