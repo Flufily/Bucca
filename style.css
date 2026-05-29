@@ -12,9 +12,9 @@ body {
         radial-gradient(circle at 15% 80%, rgba(255, 119, 0, 0.03) 0%, transparent 50%),
         
         /* Die neuen, sichtbaren Sterne (Größe hochgeschraubt auf bis zu 3px) */
-        radial-gradient(1.8px 1.8px at 60px 120px, #ffffff 100%, transparent),
-        radial-gradient(2.5px 2.5px at 160px 260px, #00f0ff 100%, transparent), /* Scharfes Cyan */
-        radial-gradient(1.5px 1.5px at 240px 70px, rgba(255, 255, 255, 0.8) 100%, transparent),
+        radial-gradient(1.8px 1.8px at 30px 60px, #ffffff 100%, transparent),
+        radial-gradient(2.5px 2.5px at 60px 160px, #00f0ff 100%, transparent), /* Scharfes Cyan */
+        radial-gradient(1.5px 1.5px at 40px 70px, rgba(255, 255, 255, 0.8) 100%, transparent),
         radial-gradient(3px 3px at 340px 190px, #ff7700 100%, transparent), /* Taktisches Orange */
         radial-gradient(2px 2px at 380px 340px, #ffffff 100%, transparent),
         
@@ -139,8 +139,8 @@ body.sc-target-lock .sc-cursor-glow {
 
 /* 🎇 ELEGANTER MINIMAL-TRAIL */
 .sc-trail-particle {
-    width: 3px;
-    height: 3px;
+    width: 5px;
+    height: 5px;
     background-color: rgba(0, 240, 255, 0.4);
     position: fixed;
     border-radius: 50%;
