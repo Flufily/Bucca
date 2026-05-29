@@ -1,3 +1,11 @@
+// ==========================================
+// 1. SUPABASE INITIALISIERUNG
+// ==========================================
+const SUPABASE_URL = 'https://ebmkhqcgiidyvlgzibit.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVibWtocWNnaWlkeXZsZ3ppYml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMTUzMDksImV4cCI6MjA5NTU5MTMwOX0.pE-m-Nz2XnpPYqbjdIvI7ymXvTTR4ACCHSxrz0MOCfk';
+
+// HIER RECHTS steht das vom CDN gelieferte 'supabase'
+// LINKS benennen wir unsere eigene Variable um in 'supabaseClient'
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let userIsAdmin = false;
 
