@@ -335,18 +335,13 @@ function initSciFiCursor() {
 }
 
 // ==========================================
-// 8. 🎵 SPACE AMBIENT AUDIO LOGIC
+// 8. 🎵 SPACE AMBIENT AUDIO LOGIC (AUTOPLAY DEFAULT)
 // ==========================================
 function initSpaceMusic() {
-    // Hier ist ein wunderschöner, lizenzfreier Sci-Fi Ambient Deep Space Loop hinterlegt
-    const audioTrack = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav'); 
-    
-    // Fallback falls der Track mal offline ist – ein entspannter Endlos-Space-Drone-Sound:
-    // Du kannst die URL hier unten jederzeit durch eine eigene .mp3 Datei ersetzen!
-    audioTrack.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3'; 
-    
+    // Entspannter Endlos-Space-Drone-Sound (Kannst du durch ein eigenes File ersetzen)
+    const audioTrack = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3'); 
     audioTrack.loop = true;
-    audioTrack.volume = 0.04; // Extrem leise im Hintergrund (4% Power), damit es nicht nervt!
+    audioTrack.volume = 0.04; // Schön dezent im Hintergrund (4% Lautstärke)
 
     // Erstellt den HUD-Mute-Button dynamisch unten rechts
     const muteBtn = document.createElement('button');
@@ -356,22 +351,31 @@ function initSpaceMusic() {
 
     let isPlaying = false;
 
-    // Funktion startet den Sound nach dem ersten Klick auf der Website
-    const startAudioOnInteraction = () => {
-        if(!isPlaying) {
+    // Zentrale Funktion, die versucht den Sound zu starten
+    const tryToPlayAudio = () => {
+        if (!isPlaying) {
             audioTrack.play().then(() => {
                 isPlaying = true;
                 muteBtn.innerText = '📡 COMMS: LIVE';
-            }).catch(err => console.log("Autoplay blockiert, warte auf Interaktion."));
+                // Wenn es geklappt hat, entfernen wir den Klick-Sicherheitsnetz-Listener wieder
+                window.removeEventListener('click', tryToPlayAudio);
+            }).catch(err => {
+                // Wird getriggert, wenn der Browser den Direktstart blockiert
+                console.log("Browser blockiert direkten Autoplay. Warte auf erste User-Interaktion...");
+            });
         }
     };
 
-    // Wartet auf den allerersten Klick irgendwo auf der Webseite
-    window.addEventListener('click', startAudioOnInteraction, { once: true });
+    // 🚀 SCHRITT 1: Direkt beim Laden der Seite "Standardmäßig AN" versuchen!
+    tryToPlayAudio();
+
+    // 🔄 SCHRITT 2: Sicherheitsnetz – Falls Schritt 1 blockiert wird, startet es beim allerersten Klick
+    window.addEventListener('click', tryToPlayAudio);
 
     // Macht den Button manuell klickbar für Play / Pause
+    muteBtn.innerText = '📡 COMMS: LIVE'; // Zeigt standardmäßig "LIVE" an, weil wir es erzwingen wollen
     muteBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Verhindert, dass der obere Fenster-Klick triggert
+        e.stopPropagation(); // Verhindert, dass der Fenster-Klick das Sicherheitsnetz triggert
         if (isPlaying) {
             audioTrack.pause();
             isPlaying = false;
@@ -388,7 +392,7 @@ function initSpaceMusic() {
 // App initialisieren & Systeme starten
 async function initApp() {
     initSciFiCursor(); 
-    initSpaceMusic(); // Aktiviert das Ambient-Modul
+    initSpaceMusic(); // Aktiviert das optimierte Ambient-Modul
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) updateUI(session.user);
     supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });
