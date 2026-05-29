@@ -1,0 +1,48 @@
+/* ==========================================
+   ADVANCED SCI-FI HUD EFFECTS
+   ========================================== */
+
+/* 1. Ein dezentes, animiertes Weltraum-Raster für den Hintergrund */
+body {
+    background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center;
+    position: relative;
+}
+
+/* 2. CRT-Scanlines: Erzeugt feine Linien wie auf einem alten Schiffs-Monitor */
+body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 99999; /* Liegt über allem */
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none; /* Klicks gehen durch die Schicht durch */
+    opacity: 0.4;
+}
+
+/* 3. Echter Neon-Glow für Text (mit Tailwind schwer sauber zu dosieren) */
+.sc-glow-cyan {
+    text-shadow: 0 0 5px rgba(0, 240, 255, 0.6), 
+                 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.sc-glow-orange {
+    text-shadow: 0 0 5px rgba(255, 119, 0, 0.6), 
+                 0 0 15px rgba(255, 119, 0, 0.3);
+}
+
+/* 4. Pulsierender Effekt für Fehlermeldungen oder Warnungen */
+@keyframes pulse-border {
+    0% { border-color: rgba(255, 119, 0, 0.3); box-shadow: 0 0 5px rgba(255, 119, 0, 0.1); }
+    50% { border-color: rgba(255, 119, 0, 1); box-shadow: 0 0 15px rgba(255, 119, 0, 0.4); }
+    100% { border-color: rgba(255, 119, 0, 0.3); box-shadow: 0 0 5px rgba(255, 119, 0, 0.1); }
+}
+
+.sc-pulse-panel {
+    animation: pulse-border 3s infinite ease-in-out;
+}
