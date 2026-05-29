@@ -285,7 +285,7 @@ logoutBtn.addEventListener('click', async () => {
 });
 
 // ==========================================
-// 7. 🛸 SCI-FI HUD CURSOR LOGIC (MIT TRAIL)
+// 7. 🛸 SCI-FI HUD CURSOR LOGIC
 // ==========================================
 function initSciFiCursor() {
     const dot = document.createElement('div');
@@ -303,9 +303,7 @@ function initSciFiCursor() {
         glow.style.left = e.clientX + 'px';
         glow.style.top = e.clientY + 'px';
 
-        // 🎇 Quanten-Schweif (Particle Trail) generieren
         const now = Date.now();
-        // Erzeugt alle 25 Millisekunden einen Partikel für flüssige Optik ohne Lags
         if (!window.lastTrailSpawn || now - window.lastTrailSpawn > 25) {
             const particle = document.createElement('div');
             const isLocked = document.body.classList.contains('sc-target-lock');
@@ -316,47 +314,81 @@ function initSciFiCursor() {
             
             document.body.appendChild(particle);
             
-            // Löscht das Element nach Ablauf der CSS-Animation aus dem System
-            setTimeout(() => {
-                particle.remove();
-            }, 400);
-            
+            setTimeout(() => { particle.remove(); }, 400);
             window.lastTrailSpawn = now;
         }
     });
 
     document.addEventListener('mouseover', (e) => {
         const target = e.target;
-        if (
-            target.tagName === 'BUTTON' || 
-            target.tagName === 'INPUT' || 
-            target.tagName === 'SELECT' || 
-            target.tagName === 'A' || 
-            target.tagName === 'TEXTAREA' ||
-            target.closest('button')
-        ) {
+        if (target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'A' || target.tagName === 'TEXTAREA' || target.closest('button')) {
             document.body.classList.add('sc-target-lock');
         }
     });
 
     document.addEventListener('mouseout', (e) => {
         const target = e.target;
-        if (
-            target.tagName === 'BUTTON' || 
-            target.tagName === 'INPUT' || 
-            target.tagName === 'SELECT' || 
-            target.tagName === 'A' || 
-            target.tagName === 'TEXTAREA' ||
-            !e.relatedTarget
-        ) {
+        if (target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'A' || target.tagName === 'TEXTAREA' || !e.relatedTarget) {
             document.body.classList.remove('sc-target-lock');
         }
     });
 }
 
-// App initialisieren & Cursor starten
+// ==========================================
+// 8. 🎵 SPACE AMBIENT AUDIO LOGIC
+// ==========================================
+function initSpaceMusic() {
+    // Hier ist ein wunderschöner, lizenzfreier Sci-Fi Ambient Deep Space Loop hinterlegt
+    const audioTrack = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav'); 
+    
+    // Fallback falls der Track mal offline ist – ein entspannter Endlos-Space-Drone-Sound:
+    // Du kannst die URL hier unten jederzeit durch eine eigene .mp3 Datei ersetzen!
+    audioTrack.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3'; 
+    
+    audioTrack.loop = true;
+    audioTrack.volume = 0.04; // Extrem leise im Hintergrund (4% Power), damit es nicht nervt!
+
+    // Erstellt den HUD-Mute-Button dynamisch unten rechts
+    const muteBtn = document.createElement('button');
+    muteBtn.className = 'sc-audio-toggle';
+    muteBtn.innerText = '📡 COMMS: STBY';
+    document.body.appendChild(muteBtn);
+
+    let isPlaying = false;
+
+    // Funktion startet den Sound nach dem ersten Klick auf der Website
+    const startAudioOnInteraction = () => {
+        if(!isPlaying) {
+            audioTrack.play().then(() => {
+                isPlaying = true;
+                muteBtn.innerText = '📡 COMMS: LIVE';
+            }).catch(err => console.log("Autoplay blockiert, warte auf Interaktion."));
+        }
+    };
+
+    // Wartet auf den allerersten Klick irgendwo auf der Webseite
+    window.addEventListener('click', startAudioOnInteraction, { once: true });
+
+    // Macht den Button manuell klickbar für Play / Pause
+    muteBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Verhindert, dass der obere Fenster-Klick triggert
+        if (isPlaying) {
+            audioTrack.pause();
+            isPlaying = false;
+            muteBtn.innerText = '📡 COMMS: MUTE';
+        } else {
+            audioTrack.play().then(() => {
+                isPlaying = true;
+                muteBtn.innerText = '📡 COMMS: LIVE';
+            });
+        }
+    });
+}
+
+// App initialisieren & Systeme starten
 async function initApp() {
     initSciFiCursor(); 
+    initSpaceMusic(); // Aktiviert das Ambient-Modul
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) updateUI(session.user);
     supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });
