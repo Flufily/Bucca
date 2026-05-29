@@ -2,22 +2,23 @@
    🌌 PREMIUM TACTICAL COCKPIT BACKGROUND
    ========================================== */
 body {
-    background-color: #030407; /* Tiefes Cockpit-Dunkelblau */
+    background-color: #020305; /* Knallhartes, tiefes Weltraum-Schwarz */
     
     /* Layer 1 & 2: Atmosphärische Nebel-Glows im Hintergrund
-       Layer 3 bis 7: Mikroskopisch kleine Fixsterne
-       Layer 8 & 9: Das harte, definierte High-Tech-Koordinatengitter */
+       Layer 3 bis 7: DEUTLICH GRÖSSERE & HELLERE FIXSTERNE (100% Leuchtkraft)
+       Layer 8 & 9: Das definierte High-Tech-Koordinatengitter */
     background-image: 
         radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.04) 0%, transparent 60%),
         radial-gradient(circle at 15% 80%, rgba(255, 119, 0, 0.03) 0%, transparent 50%),
         
-        radial-gradient(0.8px 0.8px at 40px 80px, rgba(255, 255, 255, 0.5) 100%, transparent),
-        radial-gradient(1px 1px at 120px 220px, rgba(0, 240, 255, 0.3) 100%, transparent),
-        radial-gradient(0.6px 0.6px at 190px 45px, rgba(255, 255, 255, 0.2) 100%, transparent),
-        radial-gradient(1.2px 1.2px at 290px 160px, rgba(255, 119, 0, 0.4) 100%, transparent),
-        radial-gradient(0.7px 0.7px at 340px 280px, rgba(255, 255, 255, 0.4) 100%, transparent),
+        /* Die neuen, sichtbaren Sterne (Größe hochgeschraubt auf bis zu 3px) */
+        radial-gradient(1.8px 1.8px at 60px 120px, #ffffff 100%, transparent),
+        radial-gradient(2.5px 2.5px at 160px 260px, #00f0ff 100%, transparent), /* Scharfes Cyan */
+        radial-gradient(1.5px 1.5px at 240px 70px, rgba(255, 255, 255, 0.8) 100%, transparent),
+        radial-gradient(3px 3px at 340px 190px, #ff7700 100%, transparent), /* Taktisches Orange */
+        radial-gradient(2px 2px at 380px 340px, #ffffff 100%, transparent),
         
-        /* Das definierte, härtere Tech-Raster */
+        /* Das definierte Tech-Raster */
         linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
         
@@ -34,33 +35,30 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, transparent 40%, rgba(2, 3, 5, 0.8) 100%);
+    background: radial-gradient(circle, transparent 40%, rgba(1, 2, 3, 0.85) 100%);
     pointer-events: none;
     z-index: 1;
 }
 
-/* 📺 LAYER B: CRT-SCANLINES & RÖHREN-PIXEL-MATRIX (Liegt über dem Content) */
+/* 📺 LAYER B: CRT-SCANLINES (Optimierte Deckkraft, damit die Sterne scheinen können!) */
 body::after {
     content: " ";
     display: block;
     position: fixed;
     top: 0; left: 0; bottom: 0; right: 0;
     
-    /* Erzeugt feinste horizontale Linien und eine ganz dezente RGB-Farbverschiebung */
+    /* Horizontale Scanlines & dezente RGB-Matrix */
     background: 
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
-        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
     
-    /* Erzeugt die Pixeldichte des CRT-Schirms (3px Zeilenabstand) */
-    background-size: 100% 3px, 6px 100%;
-    
-    /* pointer-events: none sorgt dafür, dass man durch die Linien durchklicken kann! */
+    background-size: 100% 4px, 6px 100%; /* Leicht vergrößerter Zeilenabstand für bessere Lesbarkeit */
     pointer-events: none;
     z-index: 9990; 
-    opacity: 0.45;
+    opacity: 0.22; /* Von 0.45 auf 0.22 runtergeschraubt – lässt Sterne perfekt durchscheinen! */
 }
 
-/* Schützt den Hauptinhalt, damit er lesbar unter dem CRT-Schirm liegt */
+/* Schützt den Hauptinhalt unter dem CRT-Schirm */
 main, nav, footer {
     position: relative;
     z-index: 2;
@@ -70,18 +68,18 @@ main, nav, footer {
    ⚙️ CONTENT COMPONENT UPGRADES (Glassmorphism)
    ========================================== */
 .bg-scPanel {
-    background-color: rgba(10, 12, 18, 0.7) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(8, 10, 15, 0.75) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 240, 255, 0.15) !important;
 }
 
-/* Dezentere, schärfere Custom Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 3px;
 }
 ::-webkit-scrollbar-track {
-    background: #040508;
+    background: #020305;
 }
 ::-webkit-scrollbar-thumb {
     background: rgba(0, 240, 255, 0.3);
@@ -92,7 +90,7 @@ main, nav, footer {
 }
 
 /* ==========================================
-   🛸 SCI-FI HUD CURSOR STYLES (Z-Index über CRT!)
+   🛸 SCI-FI HUD CURSOR STYLES
    ========================================== */
 html, body, button, input, select, textarea, a, option {
     cursor: none !important;
@@ -105,7 +103,7 @@ html, body, button, input, select, textarea, a, option {
     position: fixed;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 10000; /* Ganz oben, über dem CRT-Effekt */
+    z-index: 10000;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 8px #00f0ff;
     transition: background-color 0.2s, width 0.2s, height 0.2s;
