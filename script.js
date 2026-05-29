@@ -2,10 +2,10 @@
 // 1. SUPABASE INITIALISIERUNG
 // ==========================================
 const SUPABASE_URL = 'https://ebmkhqcgiidyvlgzibit.supabase.co';
+// ⚠️ FÜGE HIER NOCH DEINEN ECHTEN ANON_KEY EIN!
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVibWtocWNnaWlkeXZsZ3ppYml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMTUzMDksImV4cCI6MjA5NTU5MTMwOX0.pE-m-Nz2XnpPYqbjdIvI7ymXvTTR4ACCHSxrz0MOCfk';
 
-// HIER RECHTS steht das vom CDN gelieferte 'supabase'
-// LINKS benennen wir unsere eigene Variable um in 'supabaseClient'
+// Variable heißt "supabaseClient" um Konflikte mit dem CDN zu verhindern
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let userIsAdmin = false;
 
@@ -391,36 +391,6 @@ function initSpaceMusic() {
 async function initApp() {
     initSciFiCursor(); 
     initSpaceMusic(); // Zündet das Musik-Modul
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) updateUI(session.user);
-    supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });
-}
-initApp();
-
-    // 🔄 SCHRITT 2: Sicherheitsnetz – Falls Schritt 1 blockiert wird, startet es beim allerersten Klick
-    window.addEventListener('click', tryToPlayAudio);
-
-    // Macht den Button manuell klickbar für Play / Pause
-    muteBtn.innerText = '📡 COMMS: LIVE'; // Zeigt standardmäßig "LIVE" an, weil wir es erzwingen wollen
-    muteBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Verhindert, dass der Fenster-Klick das Sicherheitsnetz triggert
-        if (isPlaying) {
-            audioTrack.pause();
-            isPlaying = false;
-            muteBtn.innerText = '📡 COMMS: MUTE';
-        } else {
-            audioTrack.play().then(() => {
-                isPlaying = true;
-                muteBtn.innerText = '📡 COMMS: LIVE';
-            });
-        }
-    });
-}
-
-// App initialisieren & Systeme starten
-async function initApp() {
-    initSciFiCursor(); 
-    initSpaceMusic(); // Aktiviert das optimierte Ambient-Modul
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) updateUI(session.user);
     supabaseClient.auth.onAuthStateChange((_event, session) => { updateUI(session?.user ?? null); });
